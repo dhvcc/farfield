@@ -81,14 +81,14 @@ type CapabilityFixture = {
 let agentsFixture: {
   ok: true;
   agents: Array<{
-    id: "codex" | "opencode";
+    id: "codex" | "opencode" | "cursor";
     label: string;
     enabled: boolean;
     connected: boolean;
     capabilities: CapabilityFixture;
     projectDirectories: string[];
   }>;
-  defaultAgentId: "codex" | "opencode";
+  defaultAgentId: "codex" | "opencode" | "cursor";
 };
 
 let threadsFixture: {
@@ -100,7 +100,7 @@ let threadsFixture: {
     updatedAt: number;
     cwd?: string;
     source: "opencode";
-    agentId: "codex" | "opencode";
+    agentId: "codex" | "opencode" | "cursor";
   }>;
   nextCursor: null;
   pages: number;
@@ -142,7 +142,7 @@ let modelsFixture: {
 let readThreadResolver: (threadId: string) => {
   ok: true;
   thread: Record<string, object | string | number | boolean | null | undefined>;
-  agentId: "codex" | "opencode";
+  agentId: "codex" | "opencode" | "cursor";
 } | null;
 
 let liveStateResolver: (threadId: string) => {
@@ -150,6 +150,7 @@ let liveStateResolver: (threadId: string) => {
   threadId: string;
   ownerClientId: string | null;
   conversationState: Record<string, object | string | number | boolean | null | undefined> | null;
+  liveStateError: null;
 };
 
 function buildConversationStateFixture(threadId: string, modelId: string): {
@@ -197,6 +198,8 @@ function buildConversationStateFixture(threadId: string, modelId: string): {
 }
 
 beforeEach(() => {
+  window.history.replaceState(null, "", "/");
+  window.localStorage.clear();
   MockEventSource.reset();
   agentsFixture = {
     ok: true,
@@ -271,7 +274,8 @@ beforeEach(() => {
     ok: true,
     threadId,
     ownerClientId: null,
-    conversationState: null
+    conversationState: null,
+    liveStateError: null
   });
 });
 
@@ -504,7 +508,8 @@ describe("App", () => {
       ok: true,
       threadId: targetThreadId,
       ownerClientId: "client-1",
-      conversationState: buildConversationStateFixture(targetThreadId, modelId)
+      conversationState: buildConversationStateFixture(targetThreadId, modelId),
+      liveStateError: null
     });
 
     render(<App />);

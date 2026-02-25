@@ -33,9 +33,21 @@ const OpenCodeThreadListItemSchema = z
   })
   .passthrough();
 
+const CursorThreadListItemSchema = z
+  .object({
+    id: z.string().min(1),
+    preview: z.string(),
+    createdAt: z.number().int().nonnegative(),
+    updatedAt: z.number().int().nonnegative(),
+    cwd: z.string().optional(),
+    source: z.literal("cursor")
+  })
+  .passthrough();
+
 export const AppServerThreadListItemSchema = z.union([
   AppServerGeneratedThreadListItemSchema,
-  OpenCodeThreadListItemSchema
+  OpenCodeThreadListItemSchema,
+  CursorThreadListItemSchema
 ]);
 
 export const AppServerListThreadsResponseSchema = z

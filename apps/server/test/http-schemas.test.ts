@@ -62,11 +62,11 @@ describe("server request schemas", () => {
 
   it("validates start thread body with agentId", () => {
     const parsed = parseBody(StartThreadBodySchema, {
-      agentId: "opencode",
+      agentId: "cursor",
       cwd: "/tmp/workspace"
     });
 
-    expect(parsed.agentId).toBe("opencode");
+    expect(parsed.agentId).toBe("cursor");
   });
 
   it("rejects deprecated agentKind field", () => {

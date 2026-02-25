@@ -9,7 +9,7 @@ describe("server cli options", () => {
 
   it("expands all to every known agent", () => {
     const parsed = parseServerCliOptions(["--agents=all"]);
-    expect(parsed.agentIds).toEqual(["codex", "opencode"]);
+    expect(parsed.agentIds).toEqual(["codex", "opencode", "cursor"]);
   });
 
   it("keeps order and dedupes repeated agent ids", () => {

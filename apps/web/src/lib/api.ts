@@ -81,7 +81,7 @@ const CreateThreadResponseSchema = z
   .object({
     ok: z.literal(true),
     threadId: z.string(),
-    agentId: z.enum(["codex", "opencode"])
+    agentId: z.enum(["codex", "opencode", "cursor"])
   })
   .merge(AppServerStartThreadResponseSchema)
   .passthrough();
@@ -161,7 +161,7 @@ export async function getHealth(): Promise<z.infer<typeof HealthResponseSchema>>
   return HealthResponseSchema.parse(await request("/api/health"));
 }
 
-const AgentIdSchema = z.enum(["codex", "opencode"]);
+const AgentIdSchema = z.enum(["codex", "opencode", "cursor"]);
 export type AgentId = z.infer<typeof AgentIdSchema>;
 
 const AgentCapabilitiesSchema = z
@@ -199,7 +199,7 @@ export async function listAgents(): Promise<z.infer<typeof AgentsResponseSchema>
 const ThreadListItemWithAgentSchema = AppServerListThreadsResponseSchema.shape.data.element.and(
   z
     .object({
-      agentId: z.enum(["codex", "opencode"]),
+      agentId: z.enum(["codex", "opencode", "cursor"]),
       source: z.string().optional()
     })
     .passthrough()
@@ -230,7 +230,7 @@ export async function listThreads(options: {
 }
 
 const ReadThreadResponseWithAgentSchema = AppServerReadThreadResponseSchema.extend({
-  agentId: z.enum(["codex", "opencode"])
+  agentId: z.enum(["codex", "opencode", "cursor"])
 });
 
 export async function readThread(

@@ -201,7 +201,8 @@ const ASSUMED_APP_DEFAULT_EFFORT = "medium";
 const SIDEBAR_COLLAPSED_GROUPS_STORAGE_KEY = "farfield.sidebar.collapsed-groups.v1";
 const AGENT_FAVICON_BY_ID: Record<AgentId, string> = {
   codex: "https://openai.com/favicon.ico",
-  opencode: "https://opencode.ai/favicon.ico"
+  opencode: "https://opencode.ai/favicon.ico",
+  cursor: "https://cursor.com/favicon.ico"
 };
 
 function agentFavicon(agentId: AgentId | null | undefined): string | null {
@@ -784,20 +785,21 @@ export function App(): React.JSX.Element {
   const commitLabel = health?.state.gitCommit ?? "unknown";
   const codexConfigured = agentsById.codex?.enabled === true;
   const openCodeConnected = agentsById.opencode?.connected === true;
+  const cursorConnected = agentsById.cursor?.connected === true;
   const allSystemsReady = codexConfigured
     ? (
       health?.state.appReady === true &&
       health?.state.ipcConnected === true &&
       health?.state.ipcInitialized === true
     )
-    : openCodeConnected;
+    : openCodeConnected || cursorConnected;
   const hasAnySystemFailure = codexConfigured
     ? (
       health?.state.appReady === false ||
       health?.state.ipcConnected === false ||
       health?.state.ipcInitialized === false
     )
-    : !openCodeConnected;
+    : !(openCodeConnected || cursorConnected);
   /* Data loading */
   const loadCoreData = useCallback(async () => {
     const [nh, nt, nm, nmo, ntr, nhist, nag] = await Promise.all([

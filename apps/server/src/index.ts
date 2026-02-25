@@ -26,6 +26,7 @@ import { AgentRegistry } from "./agents/registry.js";
 import { ThreadIndex } from "./agents/thread-index.js";
 import { CodexAgentAdapter } from "./agents/adapters/codex-agent.js";
 import { OpenCodeAgentAdapter } from "./agents/adapters/opencode-agent.js";
+import { CursorAgentAdapter } from "./agents/adapters/cursor-agent.js";
 import type { AgentAdapter, AgentDescriptor, AgentId } from "./agents/types.js";
 
 const HOST = process.env["HOST"] ?? "127.0.0.1";
@@ -79,6 +80,14 @@ function resolveCodexExecutablePath(): string {
   }
 
   return "codex";
+}
+
+function resolveCursorExecutablePath(): string {
+  if (process.env["CURSOR_AGENT_PATH"]) {
+    return process.env["CURSOR_AGENT_PATH"];
+  }
+
+  return "cursor-agent";
 }
 
 function resolveIpcSocketPath(): string {
@@ -233,6 +242,7 @@ if (parsedCli.showHelp) {
 
 const configuredAgentIds = parsedCli.agentIds;
 const codexExecutable = resolveCodexExecutablePath();
+const cursorExecutable = resolveCursorExecutablePath();
 const ipcSocketPath = resolveIpcSocketPath();
 const gitCommit = resolveGitCommitHash();
 
@@ -375,6 +385,14 @@ for (const agentId of configuredAgentIds) {
   if (agentId === "opencode") {
     openCodeAdapter = new OpenCodeAgentAdapter();
     adapters.push(openCodeAdapter);
+    continue;
+  }
+
+  if (agentId === "cursor") {
+    adapters.push(new CursorAgentAdapter({
+      executablePath: cursorExecutable,
+      workspaceDir: DEFAULT_WORKSPACE
+    }));
   }
 }
 
@@ -396,6 +414,7 @@ function getRuntimeStateSnapshot(): Record<string, unknown> {
 
   return {
     appExecutable: codexExecutable,
+    cursorExecutable,
     socketPath: ipcSocketPath,
     gitCommit,
     appReady: codexRuntimeState?.appReady ?? false,
@@ -1227,6 +1246,7 @@ async function start(): Promise<void> {
 
   pushSystem("Starting Farfield monitor server", {
     appExecutable: codexExecutable,
+    cursorExecutable,
     socketPath: ipcSocketPath,
     agentIds: configuredAgentIds
   });
@@ -1246,6 +1266,7 @@ async function start(): Promise<void> {
   pushSystem("Monitor server ready", {
     url: `http://${HOST}:${PORT}`,
     appExecutable: codexExecutable,
+    cursorExecutable,
     socketPath: ipcSocketPath,
     agentIds: configuredAgentIds
   });

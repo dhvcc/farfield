@@ -2,7 +2,7 @@
 
 Remote control for AI coding agents — read conversations, send messages, switch models, and monitor agent activity from a clean web UI.
 
-Supports [Codex](https://openai.com/codex) and [OpenCode](https://opencode.ai).
+Supports [Codex](https://openai.com/codex), [OpenCode](https://opencode.ai), and [Cursor Agent](https://cursor.com/docs/cli/overview).
 
 Built by [@anshuchimala](https://x.com/anshuchimala).
 
@@ -33,8 +33,9 @@ Opens at `http://localhost:4312`. Defaults to Codex.
 
 ```bash
 bun run dev -- --agents=opencode             # OpenCode only
+bun run dev -- --agents=cursor               # Cursor Agent only
 bun run dev -- --agents=codex,opencode       # both
-bun run dev -- --agents=all                  # expands to codex,opencode
+bun run dev -- --agents=codex,opencode,cursor # all
 bun run dev:remote                           # network-accessible (codex)
 bun run dev:remote -- --agents=opencode      # network-accessible (opencode)
 ```
@@ -45,7 +46,7 @@ bun run dev:remote -- --agents=opencode      # network-accessible (opencode)
 
 - Node.js 20+
 - Bun 1.2+
-- Codex or OpenCode installed locally
+- Codex, OpenCode, or Cursor Agent installed locally
 
 ## Codex Schema Sync
 

@@ -703,6 +703,24 @@ describe("codex-protocol schemas", () => {
     expect(parsed.data[0]?.id).toBe("sess-1");
   });
 
+  it("parses app-server thread/list response from cursor agent", () => {
+    const parsed = parseAppServerListThreadsResponse({
+      data: [
+        {
+          id: "cursor-1",
+          preview: "Cursor Session",
+          createdAt: 1700000000,
+          updatedAt: 1700000100,
+          cwd: "/tmp/project",
+          source: "cursor"
+        }
+      ],
+      nextCursor: null
+    });
+
+    expect(parsed.data[0]?.id).toBe("cursor-1");
+  });
+
   it("parses app-server thread/read response with subset validation", () => {
     const parsed = parseAppServerReadThreadResponse({
       thread: {
@@ -779,5 +797,21 @@ describe("codex-protocol schemas", () => {
     });
 
     expect(parsed.thread.id).toBe("sess-2");
+  });
+
+  it("parses app-server thread/start response from cursor agent", () => {
+    const parsed = parseAppServerStartThreadResponse({
+      thread: {
+        id: "cursor-2",
+        preview: "(untitled)",
+        createdAt: 1700000000,
+        updatedAt: 1700000000,
+        cwd: "/tmp/project",
+        source: "cursor"
+      },
+      cwd: "/tmp/project"
+    });
+
+    expect(parsed.thread.id).toBe("cursor-2");
   });
 });

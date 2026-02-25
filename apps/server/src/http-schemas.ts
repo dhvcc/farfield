@@ -10,7 +10,7 @@ export const SetModeBodySchema = z
 
 export const StartThreadBodySchema = z
   .object({
-    agentId: z.enum(["codex", "opencode"]).optional(),
+    agentId: z.enum(["codex", "opencode", "cursor"]).optional(),
     cwd: z.string().optional(),
     model: z.string().optional(),
     modelProvider: z.string().optional(),

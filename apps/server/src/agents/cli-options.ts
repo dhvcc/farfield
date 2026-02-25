@@ -1,9 +1,9 @@
 import { z } from "zod";
 import type { AgentId } from "./types.js";
 
-const AgentIdSchema = z.enum(["codex", "opencode"]);
+const AgentIdSchema = z.enum(["codex", "opencode", "cursor"]);
 
-export const ALL_AGENT_IDS: AgentId[] = ["codex", "opencode"];
+export const ALL_AGENT_IDS: AgentId[] = ["codex", "opencode", "cursor"];
 export const DEFAULT_AGENT_IDS: AgentId[] = ["codex"];
 
 export interface ServerCliOptions {
@@ -72,7 +72,7 @@ export function formatServerHelpText(): string {
     "Usage: tsx watch src/index.ts [--agents=<ids>]",
     "",
     "Flags:",
-    "  --agents=<ids>   Comma-separated agent ids. Allowed: codex, opencode, all",
+    "  --agents=<ids>   Comma-separated agent ids. Allowed: codex, opencode, cursor, all",
     "  --help           Show this help message"
   ].join("\n");
 }
