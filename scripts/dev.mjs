@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 
 import { spawn, spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 
 const bunBinary = process.platform === "win32" ? "bun.exe" : "bun";
+const nodeBinary = process.execPath;
+const ownedRunnerPath = fileURLToPath(new URL("./owned-runner.mjs", import.meta.url));
 
 function printHelp() {
   process.stdout.write(
@@ -105,19 +108,24 @@ if (serverArgs.length > 0) {
   serverCommand.push("--", ...serverArgs);
 }
 
-const serverProcess = spawn(bunBinary, serverCommand, {
-  stdio: "inherit",
-  env: process.env
-});
+function spawnOwnedCommand(command) {
+  return spawn(
+    nodeBinary,
+    [
+      ownedRunnerPath,
+      `--owner-pid=${process.pid}`,
+      "--",
+      ...command
+    ],
+    {
+      stdio: "inherit",
+      env: process.env
+    }
+  );
+}
 
-const webProcess = spawn(
-  bunBinary,
-  ["run", "--filter", "@farfield/web", devScript],
-  {
-    stdio: "inherit",
-    env: process.env
-  }
-);
+const serverProcess = spawnOwnedCommand([bunBinary, ...serverCommand]);
+const webProcess = spawnOwnedCommand([bunBinary, "run", "--filter", "@farfield/web", devScript]);
 
 const childProcesses = [serverProcess, webProcess];
 let terminating = false;
